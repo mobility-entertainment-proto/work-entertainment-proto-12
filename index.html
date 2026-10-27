@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1e4fa8">
+<title>総務からのお知らせ</title>
+<style>
+  :root {
+    --primary: #1e4fa8;
+    --primary-dark: #173f88;
+    --text: #222;
+    --muted: #555;
+    --line: #8a8a8a;
+    --bg: #f5f5f5;
+    --footer: #ebebeb;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* ヘッダー */
+  header {
+    background: var(--primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    padding-top: calc(8px + env(safe-area-inset-top));
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .icon-btn { background: none; border: 0; color: inherit; padding: 4px; cursor: pointer; display: flex; }
+  .brand { font-size: 24px; letter-spacing: .5px; flex: 1; }
+  .user-box { text-align: right; font-size: 14px; line-height: 1.4; min-width: 0; }
+  .user-box .email { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+  .status { display: flex; align-items: center; justify-content: flex-end; gap: 4px; }
+  .status .dot { width: 12px; height: 12px; border-radius: 50%; background: #6cc24a; border: 1px solid #fff; }
+
+  /* 本体 */
+  main { flex: 1; width: 100%; max-width: 480px; margin: 0 auto; padding: 32px 24px 40px; }
+  .screen { display: none; }
+  .screen.active { display: block; }
+  h1 { font-size: 17px; font-weight: 500; text-align: center; margin: 24px 0 20px; }
+
+  .field { display: grid; grid-template-columns: 84px 1fr; align-items: end; gap: 12px; margin-bottom: 18px; }
+  .field label { text-align: right; font-size: 15px; padding-bottom: 6px; }
+  .field input, .field .value {
+    font: inherit; font-size: 15px; color: var(--text);
+    border: 0; border-bottom: 1px solid var(--line);
+    background: transparent; padding: 6px 0; width: 100%; min-width: 0;
+    border-radius: 0; outline: none;
+  }
+  .field input:focus { border-bottom: 2px solid var(--primary); padding-bottom: 5px; }
+  .field .value { word-break: break-all; }
+
+  .actions { margin-top: 40px; display: grid; gap: 14px; }
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    font: inherit; font-size: 18px; height: 56px; border-radius: 4px; cursor: pointer;
+    border: 2px solid var(--primary); transition: background .15s, transform .05s;
+  }
+  .btn:active { transform: scale(.99); }
+  .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,.2); }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-outline { background: #fff; color: var(--primary); }
+  .btn-outline:hover { background: #eef3fc; }
+
+  /* 完了画面 */
+  .done { text-align: center; padding-top: 16px; }
+  .done .check { width: 64px; height: 64px; border-radius: 50%; background: var(--primary); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+  .done h2 { font-size: 20px; font-weight: 600; margin: 0 0 20px; }
+  .summary { background: #fff; border-radius: 6px; padding: 16px 20px; text-align: left; font-size: 14px; margin: 20px 0 24px; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+  .summary dl { display: grid; grid-template-columns: 84px 1fr; gap: 10px 12px; margin: 0; }
+  .summary dt { color: var(--muted); }
+  .summary dd { margin: 0; word-break: break-all; }
+
+  /* 総務からのお知らせ */
+  .news { background: #fff; border-radius: 14px; text-align: left; box-shadow: 0 4px 14px rgba(30,79,168,.12); overflow: hidden; }
+  .news-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: #eef3fc; border-bottom: 1px solid #dce6f7; }
+  .news-head b { font-size: 14px; color: var(--primary); display: flex; align-items: center; gap: 6px; }
+  .news-head span { font-size: 12px; color: var(--muted); }
+  .slide { position: relative; padding: 16px 16px 12px; min-height: 176px; transition: opacity .6s ease; }
+  .slide.out { opacity: 0; }
+  .slide .top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .slide .ico { width: 44px; height: 44px; flex: 0 0 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+  .slide .ico svg { width: 26px; height: 26px; }
+  .slide .cat { font-size: 11px; font-weight: 800; color: #fff; border-radius: 999px; padding: 2px 10px; display: inline-block; }
+  .slide .date { font-size: 12px; color: var(--muted); margin-left: 6px; }
+  .slide .new { font-size: 10px; font-weight: 800; color: #e74c3c; border: 1px solid #e74c3c; border-radius: 4px; padding: 0 4px; margin-left: 6px; }
+  .slide h3 { font-size: 17px; margin: 0 0 6px; line-height: 1.45; }
+  .slide p { font-size: 13px; color: #444; margin: 0; line-height: 1.6; }
+  .slide .more { display: inline-flex; align-items: center; gap: 2px; margin-top: 10px; background: none; border: 0; padding: 0; color: var(--primary); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .news-foot { display: flex; align-items: center; gap: 12px; padding: 0 16px 14px; }
+  .dots { display: flex; gap: 8px; }
+  .dots button { width: 9px; height: 9px; border-radius: 50%; border: 0; padding: 0; background: #cdd6e6; cursor: pointer; transition: all .3s; }
+  .dots button[aria-current="true"] { width: 22px; border-radius: 5px; background: var(--primary); }
+  .timer { flex: 1; height: 3px; background: #e6ebf3; border-radius: 2px; overflow: hidden; }
+  .timer div { height: 100%; width: 0; background: var(--primary); opacity: .5; }
+  .timer div.run { animation: timer linear forwards; }
+  @keyframes timer { from { width: 0; } to { width: 100%; } }
+  .pause { background: none; border: 0; padding: 2px; color: var(--muted); cursor: pointer; display: flex; }
+
+  /* 詳細 */
+  .sheet { position: fixed; inset: 0; background: rgba(15,25,50,.5); display: none; align-items: flex-end; justify-content: center; z-index: 30; }
+  .sheet.open { display: flex; }
+  .sheet .panel { width: 100%; max-width: 480px; background: #fff; border-radius: 18px 18px 0 0; padding: 20px 20px calc(24px + env(safe-area-inset-bottom)); text-align: left; animation: up .3s ease-out; max-height: 85vh; overflow: auto; }
+  @keyframes up { from { transform: translateY(40px); } }
+  .sheet h3 { font-size: 18px; margin: 10px 0 8px; line-height: 1.45; }
+  .sheet .body { font-size: 14px; line-height: 1.8; color: #333; white-space: pre-line; }
+  .sheet .from { font-size: 12px; color: var(--muted); margin-top: 14px; }
+  .sheet .btn { margin-top: 18px; width: 100%; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slide { transition: none; }
+    .timer div.run { animation: none; }
+  }
+
+  /* フッター */
+  footer { background: var(--footer); padding: 20px 20px calc(20px + env(safe-area-inset-bottom)); font-size: 14px; }
+  footer nav { display: flex; flex-wrap: wrap; gap: 8px 0; }
+  footer nav a { color: var(--primary); text-decoration: none; padding: 0 12px; border-left: 1px solid #999; }
+  footer nav a:first-child { border-left: 0; padding-left: 0; }
+  footer .copy { color: #888; text-align: center; margin-top: 16px; font-size: 12px; }
+</style>
+</head>
+<body>
+  <header>
+    <button class="icon-btn" aria-label="メニュー">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </button>
+    <div class="brand">SEAT</div>
+    <div class="user-box">
+      <div class="email" id="headerUser"></div>
+      <div class="status">
+        <span class="dot"></span>テレワーク
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/></svg>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 入力画面 -->
+    <section class="screen active" id="screen-form">
+      <h1>在席退席登録</h1>
+      <div class="field">
+        <label for="card">カード番号</label>
+        <input id="card" type="text" inputmode="numeric" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>ユーザーID</label>
+        <div class="value" id="userId"></div>
+      </div>
+      <div class="field">
+        <label for="comment">コメント</label>
+        <input id="comment" type="text" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="datetime">日時</label>
+        <input id="datetime" type="datetime-local">
+      </div>
+      <div class="actions">
+        <button class="btn btn-primary" id="btnIn">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M11 7 9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5-5-5zm9 12h-8v2h8a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-8v2h8v14z"/></svg>
+          在席登録
+        </button>
+        <button class="btn btn-outline" id="btnOut">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="m17 7-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8v-2H4V5z"/></svg>
+          退席登録
+        </button>
+      </div>
+    </section>
+
+    <!-- 完了画面 -->
+    <section class="screen" id="screen-done">
+      <div class="done">
+        <div class="check"><svg width="38" height="38" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></div>
+        <h2 id="doneTitle">在席登録が完了しました</h2>
+
+        <section class="news" aria-roledescription="carousel" aria-label="総務からのお知らせ">
+          <div class="news-head">
+            <b><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 11v2h4v-2h-4zm-2 6.61c.96.71 2.21 1.65 3.2 2.39.4-.53.8-1.07 1.2-1.6-.99-.74-2.24-1.68-3.2-2.4-.4.54-.8 1.08-1.2 1.61zM20.4 5.6c-.4-.53-.8-1.07-1.2-1.6-.99.74-2.24 1.68-3.2 2.4.4.53.8 1.07 1.2 1.6.96-.72 2.21-1.65 3.2-2.4zM4 9a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h1v4h2v-4h1l5 3V6L8 9H4zm11.5 3c0-1.33-.58-2.53-1.5-3.35v6.69c.92-.81 1.5-2.01 1.5-3.34z"/></svg>総務からのお知らせ</b>
+            <span id="newsCount"></span>
+          </div>
+          <div class="slide" id="slide" aria-live="polite"></div>
+          <div class="news-foot">
+            <div class="dots" id="dots"></div>
+            <div class="timer"><div id="timer"></div></div>
+            <button class="pause" id="btnPause" aria-label="一時停止"></button>
+          </div>
+        </section>
+
+        <div class="summary">
+          <dl>
+            <dt>ユーザーID</dt><dd id="sumUser"></dd>
+            <dt>日時</dt><dd id="sumTime"></dd>
+            <dt>コメント</dt><dd id="sumComment"></dd>
+          </dl>
+        </div>
+        <button class="btn btn-outline" id="btnBack" style="width:100%">戻る</button>
+      </div>
+    </section>
+  </main>
+
+  <div class="sheet" id="sheet">
+    <div class="panel" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+      <div id="sheetMeta"></div>
+      <h3 id="sheetTitle"></h3>
+      <div class="body" id="sheetBody"></div>
+      <div class="from" id="sheetFrom"></div>
+      <button class="btn btn-primary" id="btnSheetClose">閉じる</button>
+    </div>
+  </div>
+
+  <footer>
+    <nav>
+      <a href="#">利用規約</a>
+      <a href="#">プライバシーポリシー</a>
+      <a href="#">ウェブアクセシビリティ</a>
+    </nav>
+    <div class="copy">Prototype — 実際の登録は行われません</div>
+  </footer>
+
+<script>
+  const USER_ID = 'taro.yamada@example.com';
+  const $ = (id) => document.getElementById(id);
+
+  $('headerUser').textContent = USER_ID;
+  $('userId').textContent = USER_ID;
+
+  function nowLocal() {
+    const d = new Date();
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().slice(0, 16);
+  }
+  $('datetime').value = nowLocal();
+
+  function show(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === id));
+    window.scrollTo(0, 0);
+  }
+
+  // ---- 総務からのお知らせ ----
+  // 本番では総務の掲示システムなどから取得する想定。今はデモ用の架空のお知らせ
+  const NOTICES = [
+    {
+      cat: '食堂', color: '#e67e22', bg: '#fdf0e3', date: '2026/10/27', isNew: true,
+      icon: '<svg viewBox="0 0 24 24" fill="#e67e22"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg>',
+      title: '11月の社員食堂 営業時間短縮のお知らせ',
+      summary: '厨房設備の工事のため、11月4日（火）〜11月28日（金）は営業時間を 11:30〜13:30 に短縮します。',
+      body: '厨房設備の更新工事にともない、下記の期間、社員食堂の営業時間を短縮します。\n\n■ 期間\n11月4日（火）〜11月28日（金）\n\n■ 営業時間\n通常 11:00〜14:00 → 短縮 11:30〜13:30\n\n期間中は混雑が予想されます。時間をずらしてのご利用にご協力ください。テイクアウト弁当は通常どおり販売します。',
+      from: '総務部 福利厚生グループ',
+    },
+    {
+      cat: '社長コラム', color: '#1e4fa8', bg: '#e8eefb', date: '2026/10/24', isNew: true,
+      icon: '<svg viewBox="0 0 24 24" fill="#1e4fa8"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>',
+      title: '社長コラム 第12回「挑戦を楽しむチームへ」を公開しました',
+      summary: '今回のテーマは「小さな挑戦の積み重ね」。現場で生まれたアイデアのエピソードも紹介しています。',
+      body: '社内ポータルの「社長コラム」に、第12回を公開しました。\n\n今回のテーマは「挑戦を楽しむチームへ」。日々の業務の中での小さな挑戦や、現場から生まれたアイデアが形になったエピソードを紹介しています。\n\nコラムへの感想は、ポータルのコメント欄からお寄せください。',
+      from: '総務部 広報グループ',
+    },
+    {
+      cat: '健康', color: '#27ae60', bg: '#e6f6ec', date: '2026/10/20', isNew: false,
+      icon: '<svg viewBox="0 0 24 24" fill="#27ae60"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>',
+      title: 'インフルエンザ予防接種（社内接種）の予約受付中',
+      summary: '社内での予防接種を実施します。予約は11月10日（月）まで。費用は会社が全額負担します。',
+      body: '今年も社内でインフルエンザ予防接種を実施します。\n\n■ 接種日\n11月17日（月）・18日（火）\n\n■ 場所\n本館 2F 健康管理室\n\n■ 予約締め切り\n11月10日（月）\n\n費用は会社が全額負担します。予約は社内ポータルの「健康管理」から行えます。',
+      from: '総務部 健康管理室',
+    },
+  ];
+  const SHOW_MS = 6000, FADE_MS = 600;
+  let idx = 0, rotTimer = null, paused = false;
+  const reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const PAUSE_ICON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+  const PLAY_ICON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+
+  function paint(i) {
+    const n = NOTICES[i];
+    $('slide').innerHTML = `<div class="top"><div class="ico" style="background:${n.bg}">${n.icon}</div><div><span class="cat" style="background:${n.color}">${n.cat}</span><span class="date">${n.date}</span>${n.isNew ? '<span class="new">NEW</span>' : ''}</div></div>
+      <h3>${n.title}</h3><p>${n.summary}</p><button class="more" data-open="${i}">詳しく見る ›</button>`;
+    $('newsCount').textContent = `${i + 1} / ${NOTICES.length}`;
+    $('dots').querySelectorAll('button').forEach((b, k) => b.setAttribute('aria-current', k === i));
+  }
+  function restartTimer() {
+    const t = $('timer');
+    t.classList.remove('run'); void t.offsetWidth;
+    if (!paused) { t.style.animationDuration = `${SHOW_MS}ms`; t.classList.add('run'); }
+  }
+  // フェードアウト → 中身を入れ替え → フェードイン
+  function goTo(i) {
+    clearTimeout(rotTimer);
+    const next = (i + NOTICES.length) % NOTICES.length;
+    const swap = () => { idx = next; paint(idx); $('slide').classList.remove('out'); schedule(); };
+    if (reduced) { swap(); return; }
+    $('slide').classList.add('out');
+    rotTimer = setTimeout(swap, FADE_MS);
+  }
+  function schedule() {
+    clearTimeout(rotTimer);
+    restartTimer();
+    if (!paused) rotTimer = setTimeout(() => goTo(idx + 1), SHOW_MS);
+  }
+  function setPaused(p) {
+    paused = p;
+    $('btnPause').innerHTML = p ? PLAY_ICON : PAUSE_ICON;
+    $('btnPause').setAttribute('aria-label', p ? '再生' : '一時停止');
+    schedule();
+  }
+  function startNews() {
+    $('dots').innerHTML = NOTICES.map((n, k) => `<button aria-label="${k + 1}件目：${n.title}"></button>`).join('');
+    $('dots').querySelectorAll('button').forEach((b, k) => b.addEventListener('click', () => goTo(k)));
+    idx = 0; paint(0); $('slide').classList.remove('out');
+    setPaused(false);
+  }
+  function stopNews() { clearTimeout(rotTimer); }
+
+  $('btnPause').addEventListener('click', () => setPaused(!paused));
+  $('slide').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-open]');
+    if (!b) return;
+    const n = NOTICES[Number(b.dataset.open)];
+    $('sheetMeta').innerHTML = `<span class="cat" style="background:${n.color};color:#fff;font-size:11px;font-weight:800;border-radius:999px;padding:2px 10px">${n.cat}</span><span style="font-size:12px;color:var(--muted);margin-left:8px">${n.date}</span>`;
+    $('sheetTitle').textContent = n.title;
+    $('sheetBody').textContent = n.body;
+    $('sheetFrom').textContent = `発信：${n.from}`;
+    $('sheet').classList.add('open');
+    stopNews();   // 読んでいる間は切り替えない
+  });
+  function closeSheet() { $('sheet').classList.remove('open'); schedule(); }
+  $('btnSheetClose').addEventListener('click', closeSheet);
+  $('sheet').addEventListener('click', (e) => { if (e.target === $('sheet')) closeSheet(); });
+
+  function register(kind) {
+    const dt = $('datetime').value || nowLocal();
+    $('doneTitle').textContent = `${kind}登録が完了しました`;
+    $('sumUser').textContent = USER_ID;
+    $('sumTime').textContent = dt.replace('T', ' ').replace(/-/g, '/');
+    $('sumComment').textContent = $('comment').value || '—';
+    show('screen-done');
+    startNews();
+  }
+
+  $('btnIn').addEventListener('click', () => register('在席'));
+  $('btnOut').addEventListener('click', () => register('退席'));
+  $('btnBack').addEventListener('click', () => {
+    stopNews();
+    $('datetime').value = nowLocal();
+    show('screen-form');
+  });
+</script>
+</body>
+</html>
