@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 210">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1e4fa8"/><stop offset="1" stop-color="#4b86ea"/></linearGradient>
+  <linearGradient id="mt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#cfe0ff"/></linearGradient></defs>
+  <rect width="400" height="210" fill="url(#bg)"/>
+  <circle cx="30" cy="30" r="1.6" fill="#fff" opacity=".7"/><circle cx="80" cy="60" r="1.2" fill="#fff" opacity=".7"/><circle cx="140" cy="22" r="1.8" fill="#fff" opacity=".7"/><circle cx="200" cy="50" r="1.2" fill="#fff" opacity=".7"/><circle cx="370" cy="30" r="1.6" fill="#fff" opacity=".7"/><circle cx="330" cy="70" r="1.2" fill="#fff" opacity=".7"/>
+  <!-- 山と旗 -->
+  <path d="M150 210 L270 60 L400 210z" fill="url(#mt)" opacity=".95"/>
+  <path d="M230 110 L270 60 L300 98 L284 92 L272 104 L258 92z" fill="#fff"/>
+  <path d="M270 60 V20" stroke="#ffd34d" stroke-width="4"/><path d="M270 20 l34 10 -34 10z" fill="#ffd34d"/>
+  <!-- 階段をのぼる人（シルエット） -->
+  <g fill="#1e4fa8" opacity=".85"><rect x="190" y="196" width="18" height="14"/><rect x="208" y="182" width="18" height="28"/><rect x="226" y="168" width="18" height="42"/><rect x="244" y="154" width="18" height="56"/><rect x="262" y="140" width="18" height="70"/></g>
+  <g transform="translate(244 118)" fill="#ffd34d"><circle cx="0" cy="-16" r="7"/><path d="M-6 -8 h12 l3 16 h-6 l-2 14 h-6 l-1 -14 h-5z"/><path d="M6 -6 l12 -8" stroke="#ffd34d" stroke-width="4" stroke-linecap="round"/></g>
+  <!-- タイトル -->
+  <text x="24" y="122" font-size="52" font-weight="900" fill="#fff" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">Vol.12</text>
+  <rect x="26" y="136" width="154" height="30" rx="15" fill="#ffd34d"/>
+  <text x="103" y="157" font-size="13" font-weight="900" text-anchor="middle" fill="#1e3a7a" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">挑戦を楽しむチームへ</text>
+</svg>

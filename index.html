@@ -89,25 +89,26 @@
   .news-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: #eef3fc; border-bottom: 1px solid #dce6f7; }
   .news-head b { font-size: 14px; color: var(--primary); display: flex; align-items: center; gap: 6px; }
   .news-head span { font-size: 12px; color: var(--muted); }
-  .slide { position: relative; padding: 16px 16px 12px; min-height: 176px; transition: opacity .6s ease; }
+  .slide { position: relative; transition: opacity .6s ease; }
   .slide.out { opacity: 0; }
-  .slide .top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .slide .ico { width: 44px; height: 44px; flex: 0 0 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
-  .slide .ico svg { width: 26px; height: 26px; }
-  .slide .cat { font-size: 11px; font-weight: 800; color: #fff; border-radius: 999px; padding: 2px 10px; display: inline-block; }
-  .slide .date { font-size: 12px; color: var(--muted); margin-left: 6px; }
-  .slide .new { font-size: 10px; font-weight: 800; color: #e74c3c; border: 1px solid #e74c3c; border-radius: 4px; padding: 0 4px; margin-left: 6px; }
+  .banner { position: relative; aspect-ratio: 400 / 210; overflow: hidden; background: #eef3fc; }
+  .banner img { width: 100%; height: 100%; display: block; object-fit: cover; }
+  .banner img.zoom { animation: zoom 7s ease-out forwards; }
+  @keyframes zoom { from { transform: scale(1); } to { transform: scale(1.08); } }
+  .banner .cat-on { position: absolute; left: 12px; top: 12px; font-size: 12px; font-weight: 800; color: #fff; border-radius: 999px; padding: 3px 12px; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
+  .banner .count-on { position: absolute; left: 12px; top: 44px; background: #fff; color: #c0392b; font-size: 12px; font-weight: 800; border-radius: 999px; padding: 3px 10px; box-shadow: 0 2px 6px rgba(0,0,0,.2); }
+  .banner .count-on b { font-size: 16px; margin: 0 1px; }
+  .slide .text { padding: 12px 16px 10px; min-height: 150px; }
+  .slide .catch { font-size: 13px; font-weight: 800; margin: 0 0 4px; }
+  .slide .meta { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .slide .new { font-size: 10px; font-weight: 800; color: #e74c3c; border: 1px solid #e74c3c; border-radius: 4px; padding: 0 4px; }
   .slide h3 { font-size: 17px; margin: 0 0 6px; line-height: 1.45; }
   .slide p { font-size: 13px; color: #444; margin: 0; line-height: 1.6; }
   .slide .more { display: inline-flex; align-items: center; gap: 2px; margin-top: 10px; background: none; border: 0; padding: 0; color: var(--primary); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
-  .news-foot { display: flex; align-items: center; gap: 12px; padding: 0 16px 14px; }
+  .news-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 16px 14px; }
   .dots { display: flex; gap: 8px; }
   .dots button { width: 9px; height: 9px; border-radius: 50%; border: 0; padding: 0; background: #cdd6e6; cursor: pointer; transition: all .3s; }
   .dots button[aria-current="true"] { width: 22px; border-radius: 5px; background: var(--primary); }
-  .timer { flex: 1; height: 3px; background: #e6ebf3; border-radius: 2px; overflow: hidden; }
-  .timer div { height: 100%; width: 0; background: var(--primary); opacity: .5; }
-  .timer div.run { animation: timer linear forwards; }
-  @keyframes timer { from { width: 0; } to { width: 100%; } }
   .pause { background: none; border: 0; padding: 2px; color: var(--muted); cursor: pointer; display: flex; }
 
   /* 詳細 */
@@ -115,6 +116,7 @@
   .sheet.open { display: flex; }
   .sheet .panel { width: 100%; max-width: 480px; background: #fff; border-radius: 18px 18px 0 0; padding: 20px 20px calc(24px + env(safe-area-inset-bottom)); text-align: left; animation: up .3s ease-out; max-height: 85vh; overflow: auto; }
   @keyframes up { from { transform: translateY(40px); } }
+  .sheet .sheet-img { width: calc(100% + 40px); margin: -20px -20px 12px; display: block; border-radius: 18px 18px 0 0; }
   .sheet h3 { font-size: 18px; margin: 10px 0 8px; line-height: 1.45; }
   .sheet .body { font-size: 14px; line-height: 1.8; color: #333; white-space: pre-line; }
   .sheet .from { font-size: 12px; color: var(--muted); margin-top: 14px; }
@@ -122,7 +124,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .slide { transition: none; }
-    .timer div.run { animation: none; }
+    .banner img.zoom { animation: none; }
   }
 
   /* フッター */
@@ -195,7 +197,6 @@
           <div class="slide" id="slide" aria-live="polite"></div>
           <div class="news-foot">
             <div class="dots" id="dots"></div>
-            <div class="timer"><div id="timer"></div></div>
             <button class="pause" id="btnPause" aria-label="一時停止"></button>
           </div>
         </section>
@@ -214,6 +215,7 @@
 
   <div class="sheet" id="sheet">
     <div class="panel" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+      <img class="sheet-img" id="sheetImg" src="" alt="">
       <div id="sheetMeta"></div>
       <h3 id="sheetTitle"></h3>
       <div class="body" id="sheetBody"></div>
@@ -254,24 +256,24 @@
   // 本番では総務の掲示システムなどから取得する想定。今はデモ用の架空のお知らせ
   const NOTICES = [
     {
-      cat: '食堂', color: '#e67e22', bg: '#fdf0e3', date: '2026/10/27', isNew: true,
-      icon: '<svg viewBox="0 0 24 24" fill="#e67e22"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg>',
+      cat: '食堂', color: '#e67e22', date: '2026/10/27', isNew: true,
+      img: 'assets/news-cafeteria.svg', catch: '11/4から ランチは11:30スタート！', until: { date: '2026-11-04', label: '開始まで' },
       title: '11月の社員食堂 営業時間短縮のお知らせ',
       summary: '厨房設備の工事のため、11月4日（火）〜11月28日（金）は営業時間を 11:30〜13:30 に短縮します。',
       body: '厨房設備の更新工事にともない、下記の期間、社員食堂の営業時間を短縮します。\n\n■ 期間\n11月4日（火）〜11月28日（金）\n\n■ 営業時間\n通常 11:00〜14:00 → 短縮 11:30〜13:30\n\n期間中は混雑が予想されます。時間をずらしてのご利用にご協力ください。テイクアウト弁当は通常どおり販売します。',
       from: '総務部 福利厚生グループ',
     },
     {
-      cat: '社長コラム', color: '#1e4fa8', bg: '#e8eefb', date: '2026/10/24', isNew: true,
-      icon: '<svg viewBox="0 0 24 24" fill="#1e4fa8"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>',
+      cat: '社長コラム', color: '#1e4fa8', date: '2026/10/24', isNew: true,
+      img: 'assets/news-column.svg', catch: '現場のアイデアが形になった、あの話も登場',
       title: '社長コラム 第12回「挑戦を楽しむチームへ」を公開しました',
       summary: '今回のテーマは「小さな挑戦の積み重ね」。現場で生まれたアイデアのエピソードも紹介しています。',
       body: '社内ポータルの「社長コラム」に、第12回を公開しました。\n\n今回のテーマは「挑戦を楽しむチームへ」。日々の業務の中での小さな挑戦や、現場から生まれたアイデアが形になったエピソードを紹介しています。\n\nコラムへの感想は、ポータルのコメント欄からお寄せください。',
       from: '総務部 広報グループ',
     },
     {
-      cat: '健康', color: '#27ae60', bg: '#e6f6ec', date: '2026/10/20', isNew: false,
-      icon: '<svg viewBox="0 0 24 24" fill="#27ae60"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>',
+      cat: '健康', color: '#27ae60', date: '2026/10/20', isNew: false,
+      img: 'assets/news-flu.svg', catch: '会社負担で受けられる、今年の予防接種', until: { date: '2026-11-10', label: '予約締切まで' },
       title: 'インフルエンザ予防接種（社内接種）の予約受付中',
       summary: '社内での予防接種を実施します。予約は11月10日（月）まで。費用は会社が全額負担します。',
       body: '今年も社内でインフルエンザ予防接種を実施します。\n\n■ 接種日\n11月17日（月）・18日（火）\n\n■ 場所\n本館 2F 健康管理室\n\n■ 予約締め切り\n11月10日（月）\n\n費用は会社が全額負担します。予約は社内ポータルの「健康管理」から行えます。',
@@ -284,17 +286,25 @@
   const PAUSE_ICON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
   const PLAY_ICON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
 
+  // 期限までの日数（過ぎていたら表示しない）
+  function daysLeft(n) {
+    if (!n.until) return null;
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const d = Math.round((new Date(n.until.date + 'T00:00:00') - today) / 86400000);
+    return d < 0 ? null : d;
+  }
   function paint(i) {
-    const n = NOTICES[i];
-    $('slide').innerHTML = `<div class="top"><div class="ico" style="background:${n.bg}">${n.icon}</div><div><span class="cat" style="background:${n.color}">${n.cat}</span><span class="date">${n.date}</span>${n.isNew ? '<span class="new">NEW</span>' : ''}</div></div>
-      <h3>${n.title}</h3><p>${n.summary}</p><button class="more" data-open="${i}">詳しく見る ›</button>`;
+    const n = NOTICES[i], left = daysLeft(n);
+    $('slide').innerHTML = `<div class="banner"><img class="zoom" src="${n.img}" alt="${n.title}">
+        <span class="cat-on" style="background:${n.color}">${n.cat}</span>
+        ${left === null ? '' : `<span class="count-on">${n.until.label} ${left === 0 ? '<b>今日</b>' : `あと<b>${left}</b>日`}</span>`}</div>
+      <div class="text">
+        <div class="meta"><span>${n.date}</span>${n.isNew ? '<span class="new">NEW</span>' : ''}</div>
+        <p class="catch" style="color:${n.color}">${n.catch}</p>
+        <h3>${n.title}</h3><p>${n.summary}</p><button class="more" data-open="${i}">詳しく見る ›</button>
+      </div>`;
     $('newsCount').textContent = `${i + 1} / ${NOTICES.length}`;
     $('dots').querySelectorAll('button').forEach((b, k) => b.setAttribute('aria-current', k === i));
-  }
-  function restartTimer() {
-    const t = $('timer');
-    t.classList.remove('run'); void t.offsetWidth;
-    if (!paused) { t.style.animationDuration = `${SHOW_MS}ms`; t.classList.add('run'); }
   }
   // フェードアウト → 中身を入れ替え → フェードイン
   function goTo(i) {
@@ -307,7 +317,6 @@
   }
   function schedule() {
     clearTimeout(rotTimer);
-    restartTimer();
     if (!paused) rotTimer = setTimeout(() => goTo(idx + 1), SHOW_MS);
   }
   function setPaused(p) {
@@ -330,6 +339,8 @@
     if (!b) return;
     const n = NOTICES[Number(b.dataset.open)];
     $('sheetMeta').innerHTML = `<span class="cat" style="background:${n.color};color:#fff;font-size:11px;font-weight:800;border-radius:999px;padding:2px 10px">${n.cat}</span><span style="font-size:12px;color:var(--muted);margin-left:8px">${n.date}</span>`;
+    $('sheetImg').src = n.img;
+    $('sheetImg').alt = n.title;
     $('sheetTitle').textContent = n.title;
     $('sheetBody').textContent = n.body;
     $('sheetFrom').textContent = `発信：${n.from}`;

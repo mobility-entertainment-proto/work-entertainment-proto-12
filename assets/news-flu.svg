@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 210">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#43c97a"/><stop offset="1" stop-color="#b8f0cf"/></linearGradient></defs>
+  <rect width="400" height="210" fill="url(#bg)"/>
+  <circle cx="40" cy="180" r="40" fill="#fff" opacity=".22"/><circle cx="120" cy="30" r="22" fill="#fff" opacity=".22"/><circle cx="370" cy="40" r="30" fill="#fff" opacity=".22"/><circle cx="300" cy="190" r="26" fill="#fff" opacity=".22"/>
+  <!-- 盾 -->
+  <path d="M110 30 L56 50 v46 c0 40 24 68 54 80 30 -12 54 -40 54 -80 V50z" fill="#fff"/>
+  <path d="M110 44 L68 60 v36 c0 32 18 54 42 64 24 -10 42 -32 42 -64 V60z" fill="#27ae60"/>
+  <rect x="100" y="72" width="20" height="60" rx="4" fill="#fff"/><rect x="80" y="92" width="60" height="20" rx="4" fill="#fff"/>
+  <!-- 注射器 -->
+  <g transform="translate(190 120) rotate(-30)"><rect x="0" y="-11" width="86" height="22" rx="5" fill="#fff" stroke="#1e8449" stroke-width="3"/><rect x="6" y="-7" width="46" height="14" fill="#a5d6ff"/><rect x="86" y="-4" width="20" height="8" fill="#1e8449"/><path d="M106 0 h22" stroke="#555" stroke-width="2.5"/><rect x="-16" y="-16" width="14" height="32" rx="3" fill="#1e8449"/><rect x="-30" y="-4" width="16" height="8" fill="#1e8449"/></g>
+  <!-- カレンダー -->
+  <g transform="translate(282 30)"><rect x="0" y="0" width="100" height="96" rx="10" fill="#fff"/><rect x="0" y="0" width="100" height="26" rx="10" fill="#e74c3c"/><rect x="0" y="16" width="100" height="10" fill="#e74c3c"/><text x="50" y="19" font-size="13" font-weight="900" text-anchor="middle" fill="#fff" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">予約締切</text><text x="50" y="66" font-size="27" font-weight="900" text-anchor="middle" fill="#2c3e50" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">11/10</text><text x="50" y="86" font-size="12" font-weight="700" text-anchor="middle" fill="#7f8c8d" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">（月）</text></g>
+  <!-- キーワード -->
+  <g transform="translate(232 156) rotate(-3)"><rect x="0" y="0" width="156" height="36" rx="18" fill="#1e8449"/><text x="78" y="24" font-size="15" font-weight="900" text-anchor="middle" fill="#fff" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">費用は会社が全額負担</text></g>
+</svg>
